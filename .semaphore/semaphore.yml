@@ -39,6 +39,7 @@ blocks:
 
           # Job #2
           - name: Run tests
+            commands:
               - nvm use $NODE_VERSION
               - ./scripts/compile_assets.sh || echo itsnothere
               - sudo sh -c "echo '127.0.0.1 $HOST' >> /etc/hosts"
