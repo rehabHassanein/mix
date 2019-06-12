@@ -27,33 +27,33 @@ blocks:
           - cache restore mix-deps-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock),mix-deps-$SEMAPHORE_GIT_BRANCH,mix-deps-master
           - cache restore mix-build-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock),mix-build-$SEMAPHORE_GIT_BRANCH,mix-build-master
       jobs:
-      # Job #1
-      - name: Install dependencies
-        commands:
-          - mix local.rebar --force
-          - mix local.hex --force
-          - mix deps.get
-          - nvm install $NODE_VERSION
-          - cache store mix-deps-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock) deps
-          - cache store mix-build-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock) _build
+          # Job #1
+          - name: Install dependencies
+            commands:
+              - mix local.rebar --force
+              - mix local.hex --force
+              - mix deps.get
+              - nvm install $NODE_VERSION
+              - cache store mix-deps-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock) deps
+              - cache store mix-build-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock) _build
 
-      # Job #2
-      - name: Run tests
-          - nvm use $NODE_VERSION
-          - ./scripts/compile_assets.sh || echo itsnothere
-          - sudo sh -c "echo '127.0.0.1 $HOST' >> /etc/hosts"
-          - chromedriver &
-          - mix test
+          # Job #2
+          - name: Run tests
+              - nvm use $NODE_VERSION
+              - ./scripts/compile_assets.sh || echo itsnothere
+              - sudo sh -c "echo '127.0.0.1 $HOST' >> /etc/hosts"
+              - chromedriver &
+              - mix test
 
   # Block #2
   - name: "Build release"
     task:
       jobs:
-      - name: Build release
-        commands:
-          - cache restore mix-deps-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock),mix-deps-$SEMAPHORE_GIT_BRANCH,mix-deps-master
-          - cache restore mix-build-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock),mix-build-$SEMAPHORE_GIT_BRANCH,mix-build-master
-          - ./scripts/build_on_ci.sh || echo itsnothereeither
+        - name: Build release
+          commands:
+            - cache restore mix-deps-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock),mix-deps-$SEMAPHORE_GIT_BRANCH,mix-deps-master
+            - cache restore mix-build-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock),mix-build-$SEMAPHORE_GIT_BRANCH,mix-build-master
+            - ./scripts/build_on_ci.sh || echo itsnothereeither
 
 # [If applicable] Uncomment and add deployement to github in a separate .yml file.
 #promotions:
