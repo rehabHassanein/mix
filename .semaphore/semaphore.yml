@@ -18,7 +18,7 @@ blocks:
           value: /etc/ssl/certs/ca-certificates.crt
       secrets:
         - name: github_hex_token_key
-     jobs:
+      jobs:
           - name: Install dependencies & Run tests
             commands:
               - checkout
