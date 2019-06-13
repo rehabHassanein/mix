@@ -32,7 +32,6 @@ defmodule Todo.Mixfile do
       {:phoenix_ecto, "~> 0.5"},
       {:phoenix_html, "~> 1.1"},
       {:phoenix_live_reload, "~> 0.4"},
-      {:postgrex, ">= 0.0.0"},
       {:cowboy, "~> 1.0"},
     ]
   end
