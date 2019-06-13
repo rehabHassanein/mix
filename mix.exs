@@ -29,7 +29,6 @@ defmodule Todo.Mixfile do
     [
       {:plug_cors, "~> 0.7"},
       {:phoenix, "~> 0.14"},
-      {:phoenix_ecto, "~> 0.5"},
       {:phoenix_html, "~> 1.1"},
       {:phoenix_live_reload, "~> 0.4"},
       {:cowboy, "~> 1.0"},
