@@ -1,40 +1,42 @@
-defmodule Todo.Mixfile do
+defmodule Example.Mixfile do
   use Mix.Project
 
   def project do
     [
-      app: :todo,
-      version: "0.0.1",
-      elixir: "~> 1.0",
-      elixirc_paths: elixirc_paths(Mix.env),
-      compilers: [:phoenix] ++ Mix.compilers,
+      app: :example,
+      version: "0.1.0",
+      elixir: "~> 1.3",
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
-      deps: deps
+      deps: deps,
+      preferred_cli_env: [
+        "coveralls": :test,
+        "coveralls.html": :test,
+        "coveralls.json": :test,
+      ],
+      test_coverage: [tool: ExCoveralls],
     ]
   end
 
   # Configuration for the OTP application
   #
-  # Type `mix help compile.app` for more information
+  # Type "mix help compile.app" for more information
   def application do
-    [mod: {Todo, []},
-     applications: [:phoenix, :cowboy, :logger, :crypto]]
+    [applications: [:logger]]
   end
 
-  # Specifies your project dependencies
+  # Dependencies can be Hex packages:
   #
-  # Type `mix help deps` for examples and options
+  #   {:mydep, "~> 0.3.0"}
+  #
+  # Or git/path repositories:
+  #
+  #   {:mydep, git: "https://github.com/elixir-lang/mydep.git", tag: "0.1.0"}
+  #
+  # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:plug_cors, "~> 0.7"},
-      {:phoenix, "~> 0.14"},
-      {:phoenix_html, "~> 1.1"},
-      {:phoenix_live_reload, "~> 0.4"},
-      {:cowboy, "~> 1.0"},
+      {:excoveralls, "~> 0.5.7", only: :test},
     ]
   end
-
-  defp elixirc_paths(:test), do: ["lib", "web", "test/support"]
-  defp elixirc_paths(_),     do: ["lib", "web"]
 end

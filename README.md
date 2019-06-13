@@ -1,21 +1,37 @@
-# Todo
+[Codecov][1] Elixir Example
+=======================
 
-Example Phoenix Project showing off Elixir to JavaScript and interoperability with other JavaScript libraries. This should be continuosly updated as development of the ex_to_js library continues.
+[![Build Status](https://travis-ci.org/codecov/example-elixir.svg?branch=master)](https://travis-ci.org/codecov/example-elixir) [![codecov](https://codecov.io/gh/codecov/example-elixir/branch/master/graph/badge.svg?token=)](https://codecov.io/gh/codecov/example-elixir)
 
-The code in `web/static/exjs` with the `.exjs` extension are the ElixirJS files. They are converted to JavaScript and placed in `priv/static/js`. 
+This repository serves as an **example** on how to use [Codecov Global][4] for Elixir.
 
-There is a gulp task set up specifically for it `gulp build-exjs` if you want to look at how it's done in a gulp task.
+# Mix.exs
 
-Requirements:
+Add [excoveralls](https://hex.pm/packages/excoveralls) to your mix.exs deps.
 
-  * gulp `npm install -g gulp`
-  * jspm `npm install -g jspm`
+# Travis CI
 
-Instructions:
+Add to your `.travis.yml` file.
+```yml
+language: elixir
+elixir:
+  - 1.3.4
+otp_release:
+  - 19.1
 
-1. Install dependencies with `mix deps.get`
-2. Install node dependencies with `npm install`
-3. Install jspm dependencies with `jspm install`
-4. Start Phoenix endpoint with `mix phoenix.server`
+script:
+  - MIX_ENV=test mix do compile --warnings-as-errors, coveralls.json
 
-Now you can visit `localhost:4000` from your browser.
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+```
+
+See the [Travis CI documentation](https://docs.travis-ci.com/user/languages/elixir/) for more information.
+
+
+View source and learn more about [Codecov Global Uploader][4]
+
+We are happy to help if you have any questions. Please contact email our Support at [support@codecov.io](mailto:support@codecov.io)
+
+[1]: https://codecov.io/
+[4]: https://github.com/codecov/codecov-bash
