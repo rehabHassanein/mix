@@ -13,5 +13,4 @@
   "plug_cors": {:hex, :plug_cors, "0.7.3"},
   "poison": {:hex, :poison, "1.4.0"},
   "poolboy": {:hex, :poolboy, "1.5.1"},
-  "postgrex": {:hex, :postgrex, "0.8.4"},
   "ranch": {:hex, :ranch, "1.0.0"}}
