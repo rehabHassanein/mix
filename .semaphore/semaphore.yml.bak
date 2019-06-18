@@ -1,0 +1,62 @@
+version: v1.0
+name: Nedap Healthcare
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+
+blocks:
+  # Block #1
+  - name: "Tests"
+    task:
+      env_vars:
+        - name: NODE_VERSION
+          value: 9.7.1
+        - name: HOST
+          value: nedap.aperture.test
+        - name: CA_CRT_FILE
+          value: /etc/ssl/certs/ca-certificates.crt
+      secrets:
+        # Make sure you add a secret with the name "github_hex_token_key" with the
+        # following variables:
+        # HEX_NEDAP_KEY and GITHUB_TOKEN
+        # See https://docs.semaphoreci.com/article/66-environment-variables-and-secrets
+        - name: github_hex_token_key
+      jobs:
+          - name: Install dependencies & Run tests
+            commands:
+              - checkout
+              - mix hex.organization auth nedap --key $HEX_NEDAP_KEY
+              - git config --global url."https://$GITHUB_TOKEN:x-oauth-basic@github.com/".insteadOf "https://github.com/";
+              - cache restore mix-deps-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock),mix-deps-$SEMAPHORE_GIT_BRANCH,mix-deps-master
+              - cache restore mix-build-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock),mix-build-$SEMAPHORE_GIT_BRANCH,mix-build-master
+              - mix local.rebar --force
+              - mix local.hex --force
+              - mix deps.get
+              - nvm install $NODE_VERSION
+              - cache store mix-deps-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock) deps
+              - cache store mix-build-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock) _build
+              - nvm use $NODE_VERSION
+              - ./scripts/compile_assets.sh 
+              - sudo sh -c "echo '127.0.0.1 $HOST' >> /etc/hosts"
+              - chromedriver &
+              - mix test
+
+  # Block #2
+  - name: "Build release"
+    task:
+      jobs:
+        - name: Build release
+          commands:
+            - cache restore mix-deps-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock),mix-deps-$SEMAPHORE_GIT_BRANCH,mix-deps-master
+            - cache restore mix-build-$SEMAPHORE_GIT_BRANCH-$(checksum mix.lock),mix-build-$SEMAPHORE_GIT_BRANCH,mix-build-master
+            - ./scripts/build_on_ci.sh 
+
+# [If applicable] Uncomment and add deployement to github in a separate .yml file.
+#promotions:
+#  - name: Send to GH
+#    pipeline_file: GH-deploy.yml
+#    auto_promote_on:
+#      - result: passed
+#        branch:
+#          - master
